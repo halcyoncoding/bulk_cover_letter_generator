@@ -5,7 +5,9 @@ Bulk generate highly personalized cover letters using LangChain and GPT-4
 
 Following the public release of ChatGPT, and especially GPT-4, significant discussion has been had about cover letters. It is, at least in my circles, basically expected that you will use ChatGPT to write your cover letter, then edit it, all under human oversight via the GUI with final edits done by a human. Any number of "solutions" have popped up which are often low quality, restricted in number, and quite expensive. Before the release of ChatGPT publically, I was using one of these solutions myself, based on, I believe, OpenAI's text-davinci-002 model. It took the process from 30 minutes for a good cover letter to 15, but as you can imagine, the quality was not great.
 
+
 On the release of GPT-4 API, I sat down to create a quicker, better process that could write cover letters in volumes without all the tedious hand-holding required with the typical GUI tools. 
+
 
 A good friend of mine, close to the space pointed out "They haven't been reading the cover letters. And now the social contract has shifted. They use robots to read the cover letters, so we use robots to write them."
 
@@ -16,8 +18,11 @@ The goal of this project is to democratize those robots, to provide at cost comm
 # FEATURES
 
 –Expert Career Advice: The tool uses prompts that make the GPT-4 model act as an expert career advisor and writing coach.
+
 –Sequential Processing: Combines a series of prompt templates and processing chains to first condense the resume and then generate the cover letter, providing a tight, focused cover letter 
+
 –Error Handling: If an error occurs during the cover letter generation for a specific row, the row is skipped, allowing the remaining rows to be processed. Each row overwrites a .pkl file you can use or re-run from if needed. Fire and forget for hundreds of cover letters at a time.
+
 –Output Saving: Cover letters are saved in .csv format with timestamps for easy reference.
 
 # GETTING STARTED
@@ -32,7 +37,9 @@ Ensure that you have the following libraries installed:
 You should also have an OpenAI API key to access the GPT-4 model. (https://platform.openai.com/account/api-keys)
 
 Setup
+
 Create a .py file containing string variables for each resume you plan on using. Additionally, include all of your skills in a variable. Example file: resumes.py.
+
 Map your resumes in a dictionary. It is suggested you use the same names in your CSV and resumes.py file. Example: 
 
     resumes_dict = {
@@ -43,6 +50,7 @@ Map your resumes in a dictionary. It is suggested you use the same names in your
     }
 
 Replace the file path 'cover_letter_automation_example.csv' with your CSV file. This CSV should contain columns: 'job_title', 'company', 'job_description', 'link', 'resume', 'cover_letter'. The 'cover_letter' field should be empty initially.
+
 Run the script.
 
 # HOW IT WORKS
