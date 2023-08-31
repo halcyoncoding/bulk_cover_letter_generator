@@ -20,7 +20,7 @@ def generate_cover_letter_text(resume, company, job_title, job_description):
     #these will take your dataframe inputs and insert them directly into the prompts
     resume_condense_template = PromptTemplate(
         input_variables = ['resume', 'job_title', 'job_description'], 
-        template = 'You are an expert career advisor with over 20 years of experience. Your job is to make your client sound as qualified as possible. You will list bullet points from the resume that are relevant to the job description.\n\nRESUME: {resume}\n\nJOB TITLE: {job_title}\n\nJOB DESCRIPTION: {job_description}'
+        template = 'You are an expert career advisor with over 20 years of experience. Your job is to make your client sound as qualified as possible. You will list bullet points from the resume that are relevant to the job description. Do not include more than 10 bullet points.\n\nRESUME: {resume}\n\nJOB TITLE: {job_title}\n\nJOB DESCRIPTION: {job_description}'
     )
 
     cover_letter_generation_template = PromptTemplate(
@@ -28,14 +28,17 @@ def generate_cover_letter_text(resume, company, job_title, job_description):
         template = """You are an expert career advisor with over 20 years of experience, writing a cover letter for your client.  Your job is to make them sound as qualified as possible. You can slightly stretch the truth or exaggerate, but you cannot write anything completely made up. 
     Your goals:
     -Personalize the cover letter to best fit what the job description requires
+    -Start with a personal connection between the client and the job based on things you can infer about the company. This should be focused on an experience the client may have had that ties in to the product or philosophy of the company.
+    -Avoid starting sentences with "As a" or "Having". It should be a strong sentence with forward motion
     -Write persuasively in a way that showcases how your client would be successful at this job
-    -Provide good structure and narrative flow, grouping together similar thoughts into paragraphs
-    -FOCUS ON THE SKILLS AND EXPERIENCE OF THE CLIENT, fitting it to meet the job description
+    -Use a clear narrative structure, combining similar ideas into larger paragraphs. There should be a clear flow and transition between ideas.
+    -Focus on the skills and experience of the client, fitting it to meet the job description
     -highlight the skills of the client that meet the job description
     -reframe the client's experience in a way that makes it applicable to the job description
-    -Write action oriented sentences (example: instead of "As an individual comfortable with x, I possess a strong skill set  in y and z", write "I possess a strong skill set in y and z"
+    -Write action oriented sentences (example: instead of "As an individual comfortable with x, I possess a strong skill set in y and z", write "I possess a strong skill set in y and z"
     -do not directly quote more than a few words at a time from the cover letter
-    -keep the cover letter less than one page long
+    -NEVER use the word "seasoned" to describe your experience or self
+    -keep the cover letter less than two pages long
 
     CANDIDATE EXPERIENCE: SKILLS {skills}\n\nRESUME {condensed_resume}
 
