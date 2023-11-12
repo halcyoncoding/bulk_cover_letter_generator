@@ -8,14 +8,21 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import SimpleMemory
 
 from apikey import OPENAI_API_KEY
-from resumes import analytics_resume, operations_resume, pm_resume, skills #create a .py file containing string variables for each resume you plan on using. Additionally, include all of your skills in a variable. 
+from resumes import editing_resume, tech_writing_resume, pharmaceutical_quality_control_resume, lab_technician_resume, investigator_analyst_resume, analytical_chemist_resume, program_analyst_resume, ergonomics_consultant_resume, health_analyst_resume,
+
 
 #setup
 os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
 
 
-def generate_cover_letter_text(resume, company, job_title, job_description):
+def extract_skills_from_resume(resume):
+    start = resume.find("SKILLS\n") + len("SKILLS\n")
+    end = resume.find("\n", start)
+    skills = resume[start:end].strip()
+    return skills
 
+def generate_refined_cover_letter_text(resume, company, job_title, job_description):
+    skills = extract_skills_from_resume(resume)
     #prompt templates
     #these will take your dataframe inputs and insert them directly into the prompts
     resume_condense_template = PromptTemplate(
@@ -25,11 +32,12 @@ def generate_cover_letter_text(resume, company, job_title, job_description):
 
     cover_letter_generation_template = PromptTemplate(
         input_variables = ['condensed_resume', 'job_title', 'job_description', 'company', 'skills'], 
-        template = """You are an expert career advisor with over 20 years of experience, writing a cover letter for your client.  Your job is to make them sound as qualified as possible. You can slightly stretch the truth or exaggerate, but you cannot write anything completely made up. 
+        template = """You are an expert career advisor with over 20 years of experience, writing a cover letter for your client.  Your job is to make them sound as qualified as possible. Where the client lacks direct experience/training, emphasize their transferable skills 
     Your goals:
-    -Personalize the cover letter to best fit what the job description requires
+    -Personalize the cover letter to best fit what the job description requires, using information from the "Old Cover Letter" section within the applicable resume, when appropriate 
     -Start with a personal connection between the client and the job based on things you can infer about the company. This should be focused on an experience the client may have had that ties in to the product or philosophy of the company.
     -Avoid starting sentences with "As a" or "Having". It should be a strong sentence with forward motion
+    -do not make reference to my commitment to "diversity and inclusion"
     -Write persuasively in a way that showcases how your client would be successful at this job
     -Use a clear narrative structure, combining similar ideas into larger paragraphs. There should be a clear flow and transition between ideas.
     -Focus on the skills and experience of the client, fitting it to meet the job description
@@ -39,6 +47,12 @@ def generate_cover_letter_text(resume, company, job_title, job_description):
     -do not directly quote more than a few words at a time from the cover letter
     -NEVER use the word "seasoned" to describe your experience or self
     -keep the cover letter less than two pages long
+    -Using the cover letter you have generated, write also write a concise paragraph, which I will use in the "Profile" section of my resume
+    -to write this additional "Profile" paragraph, Extract the core competencies, achievements, and skills from the coverLetterText
+    -Condense the extracted information into a coherent and impactful summary
+    -The summary should not exceed five sentences and should be written in the first person
+    -Ensure the summary aligns with professional standards suitable for a resume
+    -Display summary text
 
     CANDIDATE EXPERIENCE: SKILLS {skills}\n\nRESUME {condensed_resume}
 
@@ -71,7 +85,7 @@ def generate_cover_letter_text(resume, company, job_title, job_description):
     #get only activities from dictionary
     return (response['cover_letter'].strip())
 
-def get_cover_letters(dataframe, resumes_dict, skills):
+def get_cover_letters(dataframe, resumes_dict):
     for index, row in dataframe.iterrows():
         resume_name = row['resume']
         resume = resumes_dict.get(resume_name, resume_name)
@@ -92,7 +106,7 @@ def get_cover_letters(dataframe, resumes_dict, skills):
             continue
 
         try:
-            cover_letter_text = generate_cover_letter_text(resume, company, job_title, job_description)
+            cover_letter_text = generate_refined_cover_letter_text(resume, company, job_title, job_description)
             dataframe.at[index, 'cover_letter'] = cover_letter_text             
 
             dataframe.to_pickle('cover_letters.pkl')
@@ -111,12 +125,19 @@ def get_cover_letters(dataframe, resumes_dict, skills):
 #set up and run    
 
 #you will need to create a dictionary to match your resumes to the string provided from the .csv import
+
 resumes_dict = {
-    'analytics_resume': analytics_resume,
-    'operations_resume': operations_resume,
-    'pm_resume': pm_resume,
+    'editing_resume': editing_resume,
+    'tech_writing_resume': tech_writing_resume,
+    'pharmaceutical_quality_control_resume': pharmaceutical_quality_control_resume,
+    'lab_technician_resume': lab_technician_resume,
+    'investigator_analyst_resume': investigator_analyst_resume,
+    'analytical_chemist_resume': analytical_chemist_resume,
+    'program_analyst_resume': program_analyst_resume,
+    'ergonomics_consultant_resume': ergonomics_consultant_resume,
+    'health_analyst_resume': health_analyst_resume
 }
 
 df_cl_raw_import = pd.read_csv('cover_letter_automation_example.csv') #replace this with your .csv, containing the following columns: 'job_title', 'company', 'job_description', 'link', 'resume', 'cover_letter'. 'cover_letter' should be an empty field. 
 
-get_cover_letters(df_cl_raw_import,resumes_dict,skills)
+get_cover_letters(df_cl_raw_import, resumes_dict)
