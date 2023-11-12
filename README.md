@@ -1,3 +1,17 @@
+#fork_bulk_cover_letter_generator - Updates
+
+-modified bulk_cover_letter_generator.py to extract skills for each resume in the resume.py file dynamically within the script
+
+-renamed "bulk_cover_letter_generator.py" file to "cover.py" for simplicity
+
+-updated "resume.py" file with OLD COVER LETTER section for each resume, where cover letters associated with resumes can be added
+
+-modified instructions in "Your Goals" section of cover.py to use generated cover letter to generate a 5 sentence "Professional Profile" paragraph for the resume, and paste as a paragraph below the output Cover Letter
+
+-made other minor modifications to "Your Goals"
+
+
+
 # bulk_cover_letter_generator
 Bulk generate highly personalized cover letters using LangChain and GPT-4
 
